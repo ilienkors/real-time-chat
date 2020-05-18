@@ -1,13 +1,14 @@
 async function routes(fastify, options) {
 
-    fastify.get('/user/:login', (request, reply) => {
+    fastify.get('/getUser/:login/:password', (request, reply) => {
+        console.log(request.body)
         fastify.pg.connect(onConnect)
 
         function onConnect(err, client, release) {
             if (err) return reply.send(err)
 
             client.query(
-                'SELECT * FROM public."user" WHERE login=$1', [request.params.login],
+                'SELECT * FROM public."user" WHERE login=$1 AND password=MD5($2)', [request.params.login, request.params.password],
                 function onResult(err, result) {
                     release()
                     reply.send(err || result.rows[0])
@@ -16,7 +17,7 @@ async function routes(fastify, options) {
         }
     })
 
-    fastify.post('/user', (request, reply) => {
+    fastify.post('/addUser', (request, reply) => {
         fastify.pg.connect(onConnect)
 
         function onConnect(err, client, release) {

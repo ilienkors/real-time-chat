@@ -10,6 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "fastify": "^2.14.1",
+    "fastify-cors": "^3.0.3",
     "fastify-plugin": "^1.6.1",
     "fastify-postgres": "^2.0.0",
     "pg": "^8.2.1"

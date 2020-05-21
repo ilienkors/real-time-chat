@@ -2,15 +2,14 @@ const fastify = require('fastify')({
     logger: true
 })
 
-fastify.register(require('fastify-cors'), {
-    // put your options here
-})
+fastify.register(require('fastify-cors'), {})
 
 fastify.register(require('fastify-postgres'), {
     connectionString: 'postgres://postgres:mysecretpassword@localhost:5433/postgres'
 })
 
 fastify.register(require('./registration'))
+fastify.register(require('./chat'))
 
 fastify.listen(5000, function (err, address) {
     if (err) {

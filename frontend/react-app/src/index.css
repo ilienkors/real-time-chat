@@ -1,13 +1,61 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+:root {
+  --main-color: #19305a;
+  --secondary-color: #477dd8;
+  --main-font-color: #737377;
+  box-sizing: border-box;
+  font-size: 20px;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*, ::before, ::after {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: Roboto;
+  color: var(--main-color);
+}
+
+.start-page__picture {
+  background-image: url("./derick-anies-hDJT_ERrB-w-unsplash.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.start-page {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 100vh;
+}
+
+.start-page__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: var(--main-font-color);
+  padding: 2em;
+  height: 70%;
+}
+
+.start-page__input-field {
+  border-top-style: hidden;
+  border-right-style: hidden;
+  border-left-style: hidden;
+  border-bottom-style: groove;
+  height: 2em;
+  border: 0;
+  border-bottom: 0.15em solid var(--main-color);
+  width: 100%;
+}
+
+.start-page__input-field:focus {
+  outline-style: none;
+}
+
+.start-page__register-button {
+  padding: 0.75em;
+  border: 0.15em solid var(--main-color);
+  border-radius: 0.25em;
+  background-color: var(--secondary-color);
+  color: white;
 }

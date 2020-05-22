@@ -1,63 +1,84 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+import './normalize.css';
 import './index.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+} from "react-router-dom";
 
 
-class Login extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      login: '',
-      password: '',
-    }
-
-    this.handleLoginChange = this.handleLoginChange.bind(this);
-    this.handlePasswordChange = this.handlePasswordChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  getUuid(login, password) {
-    fetch('http://localhost:5000/getUser/' + login + '/' + password)
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data.user_uuid);
-      });
-  }
-
-  handleLoginChange(event) {
-    this.setState({ login: event.target.value });
-  }
-
-  handlePasswordChange(event) {
-    this.setState({ password: event.target.value });
-  }
-
-  handleSubmit(event) {
-    this.getUuid(this.state.login, this.state.password)
-    event.preventDefault();
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <input type="text" value={this.state.login} onChange={this.handleLoginChange} />
-        <input type="password" value={this.state.password} onChange={this.handlePasswordChange} />
-        <button>Login</button>
-      </form>
-    )
-  }
-}
+// const checkLogin = (login) => {
+//   return 
+// }
 
 class App extends React.Component {
   render() {
     return (
-      <div>
-        <Login />
-      </div>
+      <Router>
+        <Switch>
+        <Route path="/chats">
+            <ChatsPage />
+          </Route>
+          <Route path="/register">
+            <RegisterPage />
+          </Route>
+          <Route path="/">
+            <LoginPage />
+          </Route>
+        </Switch>
+      </Router>
     )
   }
+}
+
+function ChatsPage() {
+  return (
+    <h2>Chat</h2>
+  )
+}
+
+function LoginPage() {
+  const [login, setLogin] = useState('')
+  const [password, setPassword] = useState('')
+
+  const authorize = () => {
+    window.location = "/chats";
+  }
+
+  useEffect(() => {
+    console.log(login)
+  }, [login])
+
+  return (
+    <div className="start-page">
+      <div className="start-page__picture"></div>
+      <form className="start-page__form">
+        <h1 className="start-page__title">Login</h1>
+        <input type="text" className="start-page__input-field" id="username" placeholder="Enter login" onChange={(event) => { setLogin(event.target.value) }}></input>
+        <input type="password" className="start-page__input-field" id="password" placeholder="Enter password"></input>
+        <Link to="/register">register</Link>
+        <button type="button" className="start-page__register-button" onClick={() => authorize()}>Go!</button>
+      </form>
+    </div>
+  )
+}
+
+function RegisterPage() {
+  return (
+    <div className="start-page">
+      <div className="start-page__picture"></div>
+      <form className="start-page__form">
+        <h1 className="start-page__title">Register</h1>
+        <input type="text" className="start-page__input-field" id="username" placeholder="Enter login"></input>
+        <input type="password" className="start-page__input-field" id="password" placeholder="Enter password"></input>
+        <Link to="/">login</Link>
+        <button type="button" className="start-page__register-button">Go!</button>
+      </form>
+    </div>
+  )
 }
 
 ReactDOM.render(

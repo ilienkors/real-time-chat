@@ -8,6 +8,7 @@ import {
   Route,
   Link,
 } from "react-router-dom";
+import Chats from './Chats'
 
 
 // const checkLogin = (login) => {
@@ -20,7 +21,7 @@ class App extends React.Component {
       <Router>
         <Switch>
         <Route path="/chats">
-            <ChatsPage />
+            <Chats />
           </Route>
           <Route path="/register">
             <RegisterPage />
@@ -32,12 +33,6 @@ class App extends React.Component {
       </Router>
     )
   }
-}
-
-function ChatsPage() {
-  return (
-    <h2>Chat</h2>
-  )
 }
 
 function LoginPage() {

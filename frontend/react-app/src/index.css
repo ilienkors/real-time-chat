@@ -134,6 +134,8 @@ body {
 }
 
 .chat-window__input-block {
+  display: grid;
+  grid-template-columns: 8fr 1fr 1fr 1fr;
   position: absolute;
   bottom: 0;
   width: 100%;
@@ -147,7 +149,6 @@ body {
   height: 2em;
   border: 0;
   border-top: 0.15em solid var(--main-color);
-  width: 90%;
 }
 
 .chat-window__input:focus {
@@ -162,7 +163,6 @@ body {
   border-top: 0.15em solid var(--main-color);
   border-left: 0.15em solid var(--main-color);
   height: 2em;
-  width: 10%;
 }
 
 .chat-window__send-button:focus {

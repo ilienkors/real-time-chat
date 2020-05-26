@@ -2,6 +2,11 @@ const fastify = require('fastify')({
     logger: true
 })
 
+const multer = require('fastify-multer') // or import multer from 'fastify-multer'
+const upload = multer({ dest: 'uploads/' })
+
+fastify.register(multer.contentParser)
+
 fastify.register(require('fastify-cors'), {})
 
 fastify.register(require('fastify-postgres'), {
@@ -12,6 +17,14 @@ fastify.register(require('fastify-ws'))
 
 fastify.register(require('./registration'))
 fastify.register(require('./chat'))
+
+fastify.post(
+    '/uploadFile',
+    { preHandler: upload.single('file') },
+    function (request, reply) {
+        reply.code(200).send('SUCCESS')
+    }
+)
 
 fastify.ready(err => {
     const usernameExist = (username, users) => {
@@ -37,10 +50,8 @@ fastify.ready(err => {
             console.log('Client connected.')
 
             socket.on('message', msg => {
-                //console.log('meessage go')
                 msg = JSON.parse(msg)
                 if (!usernameExist(msg.userName, users)) {
-                    console.log('1')
                     users.push({
                         userName: msg.userName,
                         socket: socket
@@ -48,10 +59,8 @@ fastify.ready(err => {
                 }
                 console.log(users)
                 users.forEach(user => {
-                    //console.log(user.userName)
                     user.socket.send(JSON.stringify(msg))
                 })
-                //socket.send(msg)
             })
 
             socket.on('close', () => console.log('Client disconnected.'))

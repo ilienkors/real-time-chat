@@ -9,6 +9,7 @@ import {
   Link,
 } from "react-router-dom";
 import Chats from './Chats'
+import UploadForm from './UploadForm'
 
 
 // const checkLogin = (login) => {
@@ -20,7 +21,10 @@ class App extends React.Component {
     return (
       <Router>
         <Switch>
-        <Route path="/chats">
+        <Route path="/uploadForm">
+            <UploadForm />
+          </Route>
+          <Route path="/chats">
             <Chats />
           </Route>
           <Route path="/register">
@@ -37,7 +41,9 @@ class App extends React.Component {
 
 function LoginPage() {
   const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
+  //const [password, setPassword] = useState('')
+
+  console.log(login, /*password*/)
 
   const authorize = () => {
     window.location = "/chats";

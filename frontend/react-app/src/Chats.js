@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-const client = new W3CWebSocket('ws://127.0.0.1:5000');
+//const client = new W3CWebSocket('ws://127.0.0.1:5000');
+const sendAudioClient = new W3CWebSocket('ws://127.0.0.1:5000/audio');
 let count = 0
 
 const Chats = () => {
@@ -10,16 +11,29 @@ const Chats = () => {
     const [selectedFile, setSelectedFile] = useState(null)
 
     useEffect(() => {
-        client.onopen = () => {
+        /*client.onopen = () => {
             console.log('WebSocket Client Connected');
+        }*/
+        sendAudioClient.onopen = () => {
+            console.log('WebSocket Audio Client Connected');
         }
     }, [])
 
-    client.onmessage = msg => {
+    /*client.onmessage = msg => {
         console.log('onMes')
         count++
         let message = JSON.parse(msg.data)
         setMessages([...messages, <p className="chat-window__message" key={count}>{message.messageInut}</p>])
+    }*/
+
+    sendAudioClient.onmessage = msg => {
+        let window = document.getElementById('window')
+        let url = URL.createObjectURL(msg.data);
+        console.log(url)
+        let preview = document.createElement('audio');
+        preview.controls = true;
+        preview.src = url;
+        window.appendChild(preview);
     }
 
     useEffect(() => {
@@ -28,10 +42,10 @@ const Chats = () => {
 
     const sendMessage = (event) => {
         event.preventDefault()
-        client.send(JSON.stringify({
+        /*client.send(JSON.stringify({
             userName: localStorage.getItem('userName'),
             messageInut: messageInut
-        }))
+        }))*/
         setMessageInput('')
     }
 
@@ -49,19 +63,17 @@ const Chats = () => {
             navigator.mediaDevices.getUserMedia({
                 audio: true
             }).then(function (stream) {
+                let chunks = []
                 gumStream = stream;
                 recorder = new MediaRecorder(stream);
                 recorder.ondataavailable = function (e) {
-                    // let testFile = (new File([e.data], 'test.mp3')
-                    var url = URL.createObjectURL(e.data);
-                    console.log(url)
-                    var preview = document.createElement('audio');
-                    preview.controls = true;
-                    preview.src = url;
-                    document.getElementById('music').href = URL.createObjectURL(e.data);
-                    document.getElementById('music').download = 'test'
-                    document.body.appendChild(preview);
+                    chunks.push(e.data);
                 };
+                recorder.onstop = function (e) {
+                    const blob = new Blob(chunks, { 'type': 'audio/ogg; codecs=opus' });
+                    chunks = [];
+                    sendAudioClient.send(blob)
+                }
                 recorder.start();
             });
         }
@@ -90,7 +102,7 @@ const Chats = () => {
                 <div className="chat-window__header">
                     <h2 className="chat-window__title">Username</h2>
                 </div>
-                <div className="chat-window__window">
+                <div className="chat-window__window" id="window">
                     {messages}
                     <form className="chat-window__input-block" onSubmit={(event) => sendMessage(event)}>
                         <input type="text" className="chat-window__input" placeholder="Enter message" onChange={event => setMessageInput(event.target.value)} value={messageInut}></input>

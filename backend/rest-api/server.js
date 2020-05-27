@@ -13,7 +13,16 @@ fastify.register(require('fastify-postgres'), {
     connectionString: 'postgres://postgres:mysecretpassword@localhost:5433/postgres'
 })
 
-fastify.register(require('fastify-ws'))
+fastify.register(require('fastify-websocket'))
+
+fastify.get('/audio', { websocket: true }, (connection, req) => {
+    console.log('Audio Client connected.')
+    connection.socket.on('message', message => {
+        connection.socket.send(message)
+    })
+})
+
+//fastify.register(require('fastify-ws'))
 
 fastify.register(require('./registration'))
 fastify.register(require('./chat'))
@@ -26,18 +35,16 @@ fastify.post(
     }
 )
 
-fastify.ready(err => {
+/*fastify.ready(err => {
     const usernameExist = (username, users) => {
         let isFound = false
         users.forEach(user => {
             console.log(username + " != " + user.userName)
             if (username === user.userName) {
-                console.log('test')
                 isFound = true
             }
 
         })
-        console.log('false')
         return isFound
     }
 
@@ -50,6 +57,7 @@ fastify.ready(err => {
             console.log('Client connected.')
 
             socket.on('message', msg => {
+                socket.send(msg)
                 msg = JSON.parse(msg)
                 if (!usernameExist(msg.userName, users)) {
                     users.push({
@@ -57,15 +65,19 @@ fastify.ready(err => {
                         socket: socket
                     })
                 }
-                console.log(users)
                 users.forEach(user => {
-                    user.socket.send(JSON.stringify(msg))
+                    if (msg.type === 'text') {
+                        user.socket.send(JSON.stringify(msg))
+                    }
+                    
                 })
             })
 
             socket.on('close', () => console.log('Client disconnected.'))
         })
-})
+})*/
+
+
 
 fastify.listen(5000, function (err, address) {
     if (err) {

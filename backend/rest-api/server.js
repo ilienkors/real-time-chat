@@ -13,16 +13,18 @@ fastify.register(require('fastify-postgres'), {
     connectionString: 'postgres://postgres:mysecretpassword@localhost:5433/postgres'
 })
 
-fastify.register(require('fastify-websocket'))
+function handle (conn) {
+    conn.pipe(conn) // creates an echo server
+  }
 
-fastify.get('/audio', { websocket: true }, (connection, req) => {
-    console.log('Audio Client connected.')
-    connection.socket.on('message', message => {
-        connection.socket.send(message)
-    })
+fastify.register(require('fastify-websocket'), {
+    handle,
+    options: { maxPayload: 104857600 }
 })
 
-//fastify.register(require('fastify-ws'))
+fastify.register(require('./file'))
+fastify.register(require('./audio'))
+fastify.register(require('./messages'))
 
 fastify.register(require('./registration'))
 fastify.register(require('./chat'))
@@ -34,50 +36,6 @@ fastify.post(
         reply.code(200).send('SUCCESS')
     }
 )
-
-/*fastify.ready(err => {
-    const usernameExist = (username, users) => {
-        let isFound = false
-        users.forEach(user => {
-            console.log(username + " != " + user.userName)
-            if (username === user.userName) {
-                isFound = true
-            }
-
-        })
-        return isFound
-    }
-
-    if (err) throw err
-
-    console.log('Server started')
-    let users = []
-    fastify.ws
-        .on('connection', socket => {
-            console.log('Client connected.')
-
-            socket.on('message', msg => {
-                socket.send(msg)
-                msg = JSON.parse(msg)
-                if (!usernameExist(msg.userName, users)) {
-                    users.push({
-                        userName: msg.userName,
-                        socket: socket
-                    })
-                }
-                users.forEach(user => {
-                    if (msg.type === 'text') {
-                        user.socket.send(JSON.stringify(msg))
-                    }
-                    
-                })
-            })
-
-            socket.on('close', () => console.log('Client disconnected.'))
-        })
-})*/
-
-
 
 fastify.listen(5000, function (err, address) {
     if (err) {

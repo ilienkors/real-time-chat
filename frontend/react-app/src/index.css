@@ -63,7 +63,7 @@ body {
 
 .chats-page {
   display: grid;
-  grid-template-columns: 1fr 4fr;
+  grid-template-columns: 1fr;
   min-height: 100vh;
 }
 
@@ -135,7 +135,7 @@ body {
 
 .chat-window__input-block {
   display: grid;
-  grid-template-columns: 8fr 1fr 1fr 1fr;
+  grid-template-columns: 8fr 1fr 1fr 1fr 1fr;
   position: absolute;
   bottom: 0;
   width: 100%;

@@ -9,6 +9,7 @@
   "author": "Roman Ilienko",
   "license": "MIT",
   "dependencies": {
+    "cross-blob": "^1.2.3",
     "fastify": "^2.14.1",
     "fastify-cors": "^3.0.3",
     "fastify-multer": "^1.5.3",

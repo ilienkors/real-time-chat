@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-const client = new W3CWebSocket('ws://127.0.0.1:5000/audio');
+const client = new W3CWebSocket('ws://127.0.0.1:5000/audio/1234/4567');
 
 const Audio = () => {
 
@@ -34,6 +34,7 @@ const Audio = () => {
                 gumStream = stream;
                 recorder = new MediaRecorder(stream);
                 recorder.ondataavailable = function (e) {
+                    console.log('yes')
                     chunks.push(e.data);
                 };
                 recorder.onstop = function (e) {

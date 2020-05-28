@@ -1,57 +1,60 @@
 import React, { useState, useEffect } from 'react'
 import { w3cwebsocket as W3CWebSocket } from "websocket";
 
-//const client = new W3CWebSocket('ws://127.0.0.1:5000');
-const sendAudioClient = new W3CWebSocket('ws://127.0.0.1:5000/audio');
-let count = 0
+const userUuid = localStorage.getItem('userUuid')
+const chatUuid = localStorage.getItem('chatUuid')
 
+const sendMessageClient = new W3CWebSocket('ws://127.0.0.1:5000/message/' + chatUuid + '/' + userUuid);
+const sendFileClient = new W3CWebSocket('ws://127.0.0.1:5000/file/' + chatUuid + '/' + userUuid);
+const sendAudioClient = new W3CWebSocket('ws://127.0.0.1:5000/audio/' + chatUuid + '/' + userUuid);
+
+let key = 0
 const Chats = () => {
     const [messages, setMessages] = useState([])
     const [messageInut, setMessageInput] = useState('')
     const [selectedFile, setSelectedFile] = useState(null)
 
     useEffect(() => {
-        /*client.onopen = () => {
-            console.log('WebSocket Client Connected');
-        }*/
+        sendMessageClient.onopen = () => {
+            console.log('WebSocket Message Client Connected');
+        }
         sendAudioClient.onopen = () => {
             console.log('WebSocket Audio Client Connected');
         }
+        sendFileClient.onopen = () => {
+            console.log('WebSocket File Client Connected')
+        }
     }, [])
-
-    /*client.onmessage = msg => {
-        console.log('onMes')
-        count++
-        let message = JSON.parse(msg.data)
-        setMessages([...messages, <p className="chat-window__message" key={count}>{message.messageInut}</p>])
-    }*/
-
-    sendAudioClient.onmessage = msg => {
-        let window = document.getElementById('window')
-        let url = URL.createObjectURL(msg.data);
-        console.log(url)
-        let preview = document.createElement('audio');
-        preview.controls = true;
-        preview.src = url;
-        window.appendChild(preview);
-    }
-
-    useEffect(() => {
-        console.log(messages)
-    }, [messages])
 
     const sendMessage = (event) => {
         event.preventDefault()
-        /*client.send(JSON.stringify({
-            userName: localStorage.getItem('userName'),
-            messageInut: messageInut
-        }))*/
+        sendMessageClient.send(JSON.stringify({ userUuid, messageInut }))
         setMessageInput('')
     }
 
+    sendMessageClient.onmessage = msg => {
+        key++
+        let message = JSON.parse(msg.data)
+        console.log(message)
+        setMessages([...messages, <p className="chat-window__message" key={key}>{message.userUuid + ': ' + message.messageInut}</p>])
+    }
+
     const fileHandler = (event) => {
+        event.preventDefault()
         setSelectedFile(event.target.files[0])
-        console.log(event.target.files[0])
+    }
+
+    const sendFile = () => {
+        let blob = new Blob([selectedFile], { type: selectedFile.type });
+        sendFileClient.send(blob)
+        console.log(blob)
+    }
+
+    sendFileClient.onmessage = msg => {
+        key++
+        let url = URL.createObjectURL(msg.data);
+        console.log(msg.data)
+        setMessages([...messages, <p className="chat-window__message" key={key}><a href={url} download={'file.svg'}>Download File</a></p>])
     }
 
     let recorder, gumStream
@@ -79,37 +82,39 @@ const Chats = () => {
         }
     }
 
+    sendAudioClient.onmessage = msg => {
+        key++
+        console.log(msg)
+        let url = URL.createObjectURL(msg.data);
+        setMessages([...messages, <p className="chat-window__message" key={key}><audio controls={true} src={url} /></p>])
+    }
+
     return (
         <div className="chats-page">
-            <div className="chats">
+            {/*<div className="chats">
                 <div className="chats__header">
-                    <h1 className="chats__title">Chats</h1>
+                    <input placeholder="Add user"></input>
                     <button className="chats__add-button">+</button>
                 </div>
                 <div className="users">
                     <div className="users__user">
                         <h3 className="users__name">Username</h3>
                     </div>
-                    <div className="users__user">
-                        <h3 className="users__name">Username</h3>
-                    </div>
-                    <div className="users__user">
-                        <h3 className="users__name">Username</h3>
-                    </div>
                 </div>
-            </div>
+    </div>*/}
             <div className="chat-window">
                 <div className="chat-window__header">
-                    <h2 className="chat-window__title">Username</h2>
+                    <h2 className="chat-window__title">Chat</h2>
                 </div>
                 <div className="chat-window__window" id="window">
                     {messages}
-                    <form className="chat-window__input-block" onSubmit={(event) => sendMessage(event)}>
+                    <div className="chat-window__input-block">
                         <input type="text" className="chat-window__input" placeholder="Enter message" onChange={event => setMessageInput(event.target.value)} value={messageInut}></input>
-                        <input type="file" className="chat-window__send-button" onChange={event => fileHandler(event)} />
+                        <button className="chat-window__send-button" onClick={(event) => sendMessage(event)}>Send</button>
+                        <input type="file" className="chat-window__send-button" id='file' onChange={(event) => fileHandler(event)} />
+                        <button className="chat-window__send-button" onClick={() => sendFile()}>Send file</button>
                         <button className="chat-window__send-button" onClick={() => sendAudio()}>Audio</button>
-                        <button type="submit" className="chat-window__send-button">Send</button>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

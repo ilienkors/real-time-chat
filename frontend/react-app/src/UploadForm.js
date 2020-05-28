@@ -5,12 +5,27 @@ const UploadForm = () => {
     const [selectedFile, setSelectedFile] = useState(null)
 
     const fileHandler = (event) => {
-        setSelectedFile(event.target.files[0])
-        console.log(event.target.files[0])
-
+        /*setSelectedFile(event.target.files[0])
+        console.log(event.target.files[0])*/
+        console.log('upload')
+        event.preventDefault()
+        let formData = new FormData();
+        formData.append('file', event.target.files[0])
+        try {
+            fetch('http://127.0.0.1:5000/uploadFile', {
+                method: 'POST',
+                body: formData,
+            }).then((response) => {
+                return response
+            }).then((data) => {
+                console.log('Успех:', data)
+            });
+        } catch (error) {
+            console.error('Ошибка:', error)
+        }
     }
 
-    const uploadFile = async (event) => {
+    const uploadFile = (event) => {
         console.log('upload')
         event.preventDefault()
         let formData = new FormData();

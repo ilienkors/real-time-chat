@@ -9,25 +9,12 @@ import {
   Link,
 } from "react-router-dom";
 import Chats from './Chats'
-import UploadForm from './UploadForm'
-import Audio from './Audio'
-
-
-// const checkLogin = (login) => {
-//   return 
-// }
 
 class App extends React.Component {
   render() {
     return (
       <Router>
         <Switch>
-          <Route path="/audio">
-            <Audio />
-          </Route>
-          <Route path="/uploadForm">
-            <UploadForm />
-          </Route>
           <Route path="/chats">
             <Chats />
           </Route>

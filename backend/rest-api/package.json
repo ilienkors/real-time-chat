@@ -12,7 +12,7 @@
     "cross-blob": "^1.2.3",
     "fastify": "^2.14.1",
     "fastify-cors": "^3.0.3",
-    "fastify-multer": "^1.5.3",
+    "fastify-mongodb": "^2.0.0",
     "fastify-plugin": "^1.6.1",
     "fastify-postgres": "^2.0.0",
     "fastify-websocket": "^1.1.2",

@@ -22,8 +22,17 @@ body {
   min-height: 100vh;
 }
 
+.start-page__wrong-text {
+  display: none;
+  color: red;
+}
+
+.start-page__wrong-text_show {
+  display: block;
+}
+
 .start-page__picture {
-  background-image: url("./derick-anies-hDJT_ERrB-w-unsplash.jpg");
+  background-image: url("./images/login.jpg");
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -63,7 +72,7 @@ body {
 
 .chats-page {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr 6fr;
   min-height: 100vh;
 }
 

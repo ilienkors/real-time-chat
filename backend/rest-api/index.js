@@ -16,10 +16,11 @@ const decorateFastifyInstance = async (fastify) => {
 
 fastify.register(fp(decorateFastifyInstance))
 fastify.register(require('./user'), { prefix: '/api/user' })
+fastify.register(require('./message'), { prefix: '/ws' })
 
 fastify.listen(5000, function (err, address) {
     if (err) {
         fastify.log.error(err)
         process.exit(1)
-    }
+    } 
 })

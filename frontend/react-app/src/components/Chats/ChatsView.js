@@ -2,11 +2,11 @@ import React from 'react'
 import { LeftPanel } from './LeftPanel'
 import { ChatWindow } from './ChatWindow'
 
-const ChatsView = () => {
+const ChatsView = ({login}) => {
     return (
         <div className="chats-page">
             <LeftPanel />
-            <ChatWindow />
+            <ChatWindow login={login}/>
         </div>
     )
 }

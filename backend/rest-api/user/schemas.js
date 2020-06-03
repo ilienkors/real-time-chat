@@ -8,7 +8,10 @@ const registration = {
             },
             password: {
                 type: 'string'
-            }
+            },
+            friends: {
+                type: 'array'
+            },
         },
         additionalProperties: false
     },
@@ -37,7 +40,21 @@ const authorize = {
     }
 }
 
+const getLogin = {
+    response: {
+        200: {
+            type: 'object',
+            required: ['login'],
+            properties: {
+                login: { type: 'string' }
+            },
+            additionalProperties: false
+        }
+    }
+}
+
 module.exports = {
     registration,
-    authorize
+    authorize,
+    getLogin,
 }

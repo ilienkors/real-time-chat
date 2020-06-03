@@ -31,9 +31,10 @@ const RegisterController = () => {
                 setWrongPassword('start-page__wrong-text')
                 postUser('http://localhost:5000/api/user/register', { login, password })
                     .then((data) => {
-                        if (data.message === 'USERNAME_IS_NOT_AVAILABLE')
+                        if (data.message === 'USERNAME_IS_NOT_AVAILABLE') {
+                            setWrongPasswordText('Please enter password')
                             setWrongLogin(wrongLogin + ' start-page__wrong-text_show')
-                        else {
+                        } else {
                             localStorage.setItem('userId', data.userId)
                             window.location = 'http://localhost:3000/'
                         }
